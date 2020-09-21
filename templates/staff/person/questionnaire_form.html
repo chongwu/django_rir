@@ -1,0 +1,42 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}Анкетирование - {{ person.fio }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Анкета</h1>
+            <form action="{% url 'questionnaires:create_questionnaire' %}" method="post">
+                {% csrf_token %}
+                {% for category in categories%}
+                    <p><b>{{ category.name }}</b></p>
+
+                    {% for competence in category.competencies.all %}
+                        <p></p>
+                        <div class="field">
+                            <div class="control">
+                                <i>{{ competence.name }}</i>:
+                                <label class="radio">
+                                    <input checked type="radio" value="0" name="question__{{ competence.id }}">
+                                    Отсутствие или не актуальна
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" value="1" name="question__{{ competence.id }}">
+                                    Слабо выражена
+                                </label><label class="radio">
+                                    <input type="radio" value="2" name="question__{{ competence.id }}">
+                                    Среднее
+                                </label><label class="radio">
+                                    <input type="radio" value="3" name="question__{{ competence.id }}">
+                                    Владение на  проф. уровне
+                                </label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <input type="hidden" name="person" value="{{ person.tab_number }}">
+                <input type="submit" value="Отправить анкету" class="button is-primary">
+            </form>
+        </div>
+    </section>
+{% endblock %}

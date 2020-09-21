@@ -1,0 +1,41 @@
+{% extends 'staff/base.html' %}
+{% load radio_button_set %}
+
+{% block title %}Анкетирование - {{ person.fio }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Анкета</h1>
+            <form action="{% url 'questionnaires:update_questionnaire' questionnaire_id %}" method="post">
+                {% csrf_token %}
+                {% for category, rows in rows.items%}
+                    <p><b>{{ category }}</b></p>
+                    {% for row in rows %}
+                        <p></p>
+                        <div class="field">
+                            <div class="control">
+                                <i>{{ row.competence.name }}</i>:
+                                    <label class="radio">
+                                        <input {% check_radio_value row 0 %} type="radio" value="0" name="question__{{ row.competence.id }}">
+                                        Отсутствует или не актуальна
+                                    </label>
+                                <label class="radio">
+                                    <input {% check_radio_value row 1 %} type="radio" value="1" name="question__{{ row.competence.id }}">
+                                    Слабо выражена
+                                </label><label class="radio">
+                                    <input {% check_radio_value row 2 %} type="radio" value="2" name="question__{{ row.competence.id }}">
+                                    Среднее
+                                </label><label class="radio">
+                                    <input {% check_radio_value row 3 %} type="radio" value="3" name="question__{{ row.competence.id }}">
+                                    Владение на проф. уровне
+                                </label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <input type="submit" value="Сохранить анкету" class="button is-primary">
+            </form>
+        </div>
+    </section>
+{% endblock %}
