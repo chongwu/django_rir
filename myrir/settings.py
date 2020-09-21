@@ -25,7 +25,7 @@ SECRET_KEY = '^67h(1+poj8co^w86^!adudz91&t(rg#^b9287tn3tsj5x@=ru'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['desolate-gorge-38482.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
