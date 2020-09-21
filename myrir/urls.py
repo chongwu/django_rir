@@ -24,4 +24,4 @@ urlpatterns = [
     path('staff/', include('staff.urls', namespace='staff')),
     path('questionnaire/', include('questionnaires.urls', namespace='questionnaires')),
     path('reports/', include('reports.urls', namespace='reports')),
-]  # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
