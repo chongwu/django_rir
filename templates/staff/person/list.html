@@ -1,11 +1,11 @@
 {% extends 'staff/base.html' %}
 
-{% block title %}Штат сотрудников{% endblock %}
+{% block title %}{{ department.name }} - сотрудники{% endblock %}
 
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title">Список сотрудников</h1>
+            <h1 class="title">{{ department.name }} - список сотрудников</h1>
             {% if persons %}
                 <ul>
                 {% for person in persons %}

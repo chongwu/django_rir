@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
 from django.utils.encoding import smart_str
-from .models import Person
+from .models import Person, Department
 from questionnaires.models import Questionnaire, QuestionnaireRow
 from itertools import groupby
 from operator import attrgetter
@@ -11,9 +11,16 @@ import os
 
 
 # Create your views here.
-def person_list(request):
-    persons = Person.objects.all()
-    return render(request, 'staff/person/list.html', {'persons': persons})
+def person_list(request, department_id):
+    department = Department.objects.get(pk=department_id)
+    # persons = Person.objects.all()
+    persons = department.workers.filter(staff__date_stop__isnull=True)
+    return render(request, 'staff/person/list.html', {'department': department, 'persons': persons})
+
+
+def departments_list(request):
+    departments = Department.objects.all()
+    return render(request, 'staff/department/list.html', {'departments': departments})
 
 
 def person_detail(request, person_id):

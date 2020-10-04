@@ -1,0 +1,22 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}Список отделов{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Список отделов</h1>
+            {% if departments %}
+                <ul>
+                {% for department in departments %}
+                    <li><a href="{% url 'staff:person_list' department.id %}">
+                        {{ department.name }}
+                    </a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                Не добавлено ни одного отдела.
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

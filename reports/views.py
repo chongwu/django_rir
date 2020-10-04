@@ -1,23 +1,32 @@
 from django.shortcuts import render
-from django.db.models import Count, Sum
+from django.db.models import Count
 from questionnaires.models import QuestionnaireRow
-from competencies.models import Category, Competence
-from itertools import groupby
-from django.db.models import F
-from operator import attrgetter, itemgetter
+from staff.models import Department
+from competencies.models import Competence
 
 
 # Create your views here.
+def report_list(request):
+    departments = Department.objects.all()
+    return render(request, 'reports/list.html', {'departments': departments})
+
+
 def corporate_report(request):
-    all = QuestionnaireRow.objects.filter(competence_val__gt=0).values('competence__name', 'competence__category__name').annotate(Count('competence'))
-    rows = {}
-    for row in all.all():
-        if row['competence__category__name'] not in rows:
-            rows[row['competence__category__name']] = [row]
-        else:
-            rows[row['competence__category__name']].append(row)
-    return render(request, 'reports/corporate.html', {'rows': rows})
+    corporate_all = QuestionnaireRow.objects.filter(competence_val__gt=0)\
+        .values('competence__name', 'competence__category__name')\
+        .annotate(Count('competence'))
+    return render(request, 'reports/report.html', {'rows': Competence.prepare_report(corporate_all)})
 
 
-def department_report(request):
-    return render(request, 'reports/department.html')
+def department_report(request, department_id):
+    department = Department.objects.get(pk=department_id)
+    persons = department.workers.filter(staff__date_stop__isnull=True).all()
+    department_all = QuestionnaireRow.objects.filter(questionnaire__person__tab_number__in=persons)\
+        .filter(competence_val__gt=0)\
+        .values('competence__name', 'competence__category__name')\
+        .annotate(Count('competence'))
+    return render(
+        request,
+        'reports/report.html',
+        {'rows': Competence.prepare_report(department_all), 'department': department}
+    )

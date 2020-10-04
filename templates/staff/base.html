@@ -23,13 +23,13 @@
 
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a href="/" class="navbar-item">
+          <a href="{% url 'staff:departments_list' %}" class="navbar-item">
             Главная
           </a>
-          <a href="{% url 'staff:person_list' %}" class="navbar-item">
-            Сотрудники
+          <a href="{% url 'staff:departments_list' %}" class="navbar-item">
+            Отделы
           </a>
-          <a href="{% url 'reports:corporate_report' %}" class="navbar-item">
+          <a href="{% url 'reports:all_reports' %}" class="navbar-item">
             Отчеты
           </a>
         </div>

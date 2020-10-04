@@ -19,5 +19,15 @@ class Competence(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def prepare_report(cls, data):
+        rows = {}
+        for row in data.all():
+            if row['competence__category__name'] not in rows:
+                rows[row['competence__category__name']] = [row]
+            else:
+                rows[row['competence__category__name']].append(row)
+        return rows
+
     class Meta:
         ordering = ('name',)

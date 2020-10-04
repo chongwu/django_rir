@@ -9,6 +9,9 @@ from operator import attrgetter
 class Department(models.Model):
     name = models.CharField(max_length=128)
 
+    def __str__(self):
+        return self.name
+
 
 class Position(models.Model):
     name = models.CharField(max_length=45)
@@ -24,7 +27,7 @@ class Person(models.Model):
     education = models.CharField(max_length=256)
     experience = models.TextField()
     position = models.ManyToManyField(Position, through='Staff', related_name='persons')
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='persons', null=True, blank=True)
+    department = models.ManyToManyField(Department, through='Staff', related_name='workers')
 
     class Meta:
         ordering = ('-fio',)
@@ -52,6 +55,7 @@ class Staff(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_stop = models.DateField(blank=True, null=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='persons', null=True, blank=True)
 
     class Meta:
         unique_together = [['person', 'position']]

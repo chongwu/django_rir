@@ -4,7 +4,11 @@
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title is-3">Корпоративный отчет</h1>
+            {% if department %}
+                <h1 class="title is-3">{{ department.name }} - отчет</h1>
+            {% else %}
+                <h1 class="title is-3">Корпоративный отчет</h1>
+            {% endif %}
             <table class="table is-fullwidth is-hoverable is-bordered">
                 <thead>
                     <tr>
