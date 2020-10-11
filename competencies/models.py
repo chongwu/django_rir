@@ -3,18 +3,20 @@ from django.db import models
 
 # Create your models here.
 class Category(models.Model):
-    name = models.CharField(max_length=45)
+    name = models.CharField(max_length=45, verbose_name='Имя')
 
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Competence(models.Model):
-    name = models.CharField(max_length=45)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='competencies')
+    name = models.CharField(max_length=45, unique=True, verbose_name='Имя')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='competencies', verbose_name='Категория')
 
     def __str__(self):
         return self.name
@@ -31,3 +33,5 @@ class Competence(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Компетенция'
+        verbose_name_plural = 'Компетенции'

@@ -12,15 +12,23 @@ VAL_CHOICES = (
 
 # Create your models here.
 class Questionnaire(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='questionnaires')
-    date = models.DateField(auto_now_add=True)
-    competencies = models.ManyToManyField(Competence, through='QuestionnaireRow', related_name='questionnaires')
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='questionnaires',
+                               verbose_name='Сотрудник')
+    date = models.DateField(auto_now_add=True, verbose_name='Дата прохождения')
+    competencies = models.ManyToManyField(Competence, through='QuestionnaireRow', related_name='questionnaires',
+                                          verbose_name='Компетенции')
+
+    def get_competencies(self):
+        return ', '.join([competence.name for competence in self.competencies.all()])
+    get_competencies.short_description = 'Компетенции'
 
     def __str__(self):
         return f'Анкета сотрудника: {self.person.fio}'
 
     class Meta:
         ordering = ('-date',)
+        verbose_name = 'Анкета'
+        verbose_name_plural = 'Анкеты'
 
 
 class QuestionnaireRow(models.Model):

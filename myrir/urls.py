@@ -18,6 +18,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+admin.site.site_header = 'Сотрудники'
+admin.site.site_title = 'Сотрудники'
+
 urlpatterns = [
     path('', include('staff.urls', namespace='main')),
     path('admin/', admin.site.urls),
