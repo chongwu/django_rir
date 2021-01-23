@@ -30,7 +30,6 @@ ALLOWED_HOSTS = ['desolate-gorge-38482.herokuapp.com', '127.0.0.1']
 
 ADMINS = [('Denis', 'jokerd1@gmail.com')]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
