@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+# from django.conf import settings
+# from django.conf.urls.static import static
 
 admin.site.site_header = 'Сотрудники'
 admin.site.site_title = 'Сотрудники'
@@ -27,4 +27,4 @@ urlpatterns = [
     path('staff/', include('staff.urls', namespace='staff')),
     path('questionnaire/', include('questionnaires.urls', namespace='questionnaires')),
     path('reports/', include('reports.urls', namespace='reports')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]

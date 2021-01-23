@@ -50,7 +50,7 @@ class Person(models.Model):
         return reverse('staff:person_detail', args=[self.tab_number])
 
     def current_position(self):
-        return self.position.first()
+        return self.position.filter(staff__date_stop__isnull=True).first()
     current_position.short_description = 'Должность'
 
     def current_department(self):
