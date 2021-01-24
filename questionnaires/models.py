@@ -45,4 +45,10 @@ class QuestionnaireRow(models.Model):
 class QuestionnaireRowHistory(models.Model):
     questionnaire_row = models.ForeignKey(QuestionnaireRow, on_delete=models.CASCADE, related_name='history')
     competence_val = models.SmallIntegerField(default=0, choices=VAL_CHOICES)
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True, blank=True, null=True)
+
+    def get_human_read_value(self):
+        return VAL_CHOICES[self.competence_val][1]
+
+    class Meta:
+        ordering = ('-date',)

@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '^67h(1+poj8co^w86^!adudz91&t(rg#^b9287tn3tsj5x@=ru'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'staff.apps.StaffConfig',
     'competencies.apps.CompetenciesConfig',
     'questionnaires.apps.QuestionnairesConfig',
+    'products.apps.ProductsConfig',
+    'fontawesome-free',
 ]
 
 MIDDLEWARE = [

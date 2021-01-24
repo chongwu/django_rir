@@ -1,0 +1,41 @@
+{% extends 'staff/base.html'%}
+
+{% block title%}Продукт - {{ product }}{% endblock %}
+
+{% block content%}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">{{ product.name }}</h1>
+            {% if product.region %}
+                <div class="field-container mb-4">
+                    <div class="title is-5 mb-1">Регион</div>
+                    <div>{{ product.region }}</div>
+                </div>
+            {% endif %}
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Описание продукта</div>
+                <div class="has-text-justified">{{ product.description }}</div>
+            </div>
+            {% if product.additional_info %}
+                <div class="field-container mb-4">
+                    <div class="title is-5 mb-1">Дополнительная информация</div>
+                    <div class="has-text-justified">{{ product.additional_info }}</div>
+                </div>
+            {% endif %}
+            <h3 class="title is-3 mb-1">Список проектов:</h3>
+            {% if product.projects.all %}
+                <ul>
+                {% for project in product.projects.all %}
+                    <li><a href="{% url 'products:view_project' product.id project.id %}">
+                        {{ project.name }}
+                    </a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                Не добавлено ни одного проекта.
+            {% endif %}
+            {% url 'products:upload_projects_list' product.id as upload_url %}
+            {% include 'forms/upload_form.html' with upload_url=upload_url input_name='projects' button_list_text='Загрузить список проектов' button_upload_text='Добавить проекты' %}
+        </div>
+    </section>
+{% endblock %}

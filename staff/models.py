@@ -7,7 +7,7 @@ from operator import attrgetter
 
 # Create your models here.
 class Department(models.Model):
-    name = models.CharField(max_length=128, verbose_name='Наименование отдела')
+    name = models.CharField(max_length=128, verbose_name='Наименование отдела', unique=True)
 
     def __str__(self):
         return self.name
@@ -18,7 +18,7 @@ class Department(models.Model):
 
 
 class Position(models.Model):
-    name = models.CharField(max_length=45, verbose_name='Наименование должности')
+    name = models.CharField(max_length=45, verbose_name='Наименование должности', unique=True)
     competence_category = models.ManyToManyField(Category, related_name='positions',
                                                  verbose_name='Категория компетенций')
 
@@ -37,6 +37,7 @@ class Person(models.Model):
     experience = models.TextField(verbose_name='Опыт сотрудника')
     position = models.ManyToManyField(Position, through='Staff', related_name='persons', verbose_name='Должность')
     department = models.ManyToManyField(Department, through='Staff', related_name='workers', verbose_name='Отдел')
+    extra_skill = models.TextField(verbose_name='Дополнительные навыки', blank=True, null=True)
 
     class Meta:
         ordering = ('-fio',)

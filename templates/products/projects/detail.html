@@ -1,0 +1,43 @@
+{% extends 'staff/base.html'%}
+
+{% block title%}Проект - {{ project }}{% endblock %}
+
+{% block content%}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">{{ project.name }}</h1>
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Включен в продукт</div>
+                <div class="has-text-justified">
+                    <a href="{% url 'products:view_product' product.id %}">{{ product.name }}</a>
+                </div>
+            </div>
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Город</div>
+                <div>{{ project.city }}</div>
+            </div>
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Описание проекта</div>
+                <div class="has-text-justified">{{ project.description }}</div>
+            </div>
+            {% if project.additional_info %}
+                <div class="field-container mb-4">
+                    <div class="title is-5 mb-1">Дополнительная информация</div>
+                    <div class="has-text-justified">{{ project.additional_info }}</div>
+                </div>
+            {% endif %}
+            <h3 class="title is-3 mb-1">Список задействованных сотрудников:</h3>
+            {% if project.persons %}
+                <ul>
+                {% for person in project.persons.all %}
+                    <li><a href="{% url 'staff:person_detail' person.tab_number %}">
+                        {{ person.fio }} - {{ person.current_position }}
+                    </a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                Никто не задействован в проекте.
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

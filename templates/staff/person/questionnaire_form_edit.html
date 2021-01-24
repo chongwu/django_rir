@@ -6,7 +6,7 @@
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title">Анкета</h1>
+            <h1 class="title is-1">Анкета</h1>
             <form action="{% url 'questionnaires:update_questionnaire' questionnaire_id %}" method="post">
                 {% csrf_token %}
                 {% for category, rows in rows.items%}

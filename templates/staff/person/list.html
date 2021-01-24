@@ -5,7 +5,7 @@
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title">{{ department.name }} - список сотрудников</h1>
+            <h1 class="title is-1">{{ department.name }} - список сотрудников</h1>
             {% if persons %}
                 <ul>
                 {% for person in persons %}
@@ -17,6 +17,8 @@
             {% else %}
                 Сотрудников ещё нет
             {% endif %}
+            {% url 'staff:upload_persons_list' department.id as upload_url %}
+            {% include 'forms/upload_form.html' with upload_url=upload_url input_name='persons' button_list_text='Загрузить список сотрудников' button_upload_text='Добавить сотрудников' %}
         </div>
     </section>
 {% endblock %}

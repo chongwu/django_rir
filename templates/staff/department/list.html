@@ -5,7 +5,7 @@
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title">Список отделов</h1>
+            <h1 class="title is-1">Список отделов</h1>
             {% if departments %}
                 <ul>
                 {% for department in departments %}
@@ -17,6 +17,10 @@
             {% else %}
                 Не добавлено ни одного отдела.
             {% endif %}
+            {% url 'staff:upload_department_list' as upload_dep_url %}
+            {% include 'forms/upload_form.html' with upload_url=upload_dep_url input_name='departments' button_list_text='Загрузить список отделов' button_upload_text='Добавить отделы' %}
+            {% url 'staff:upload_positions_list' as upload_position_url %}
+            {% include 'forms/upload_form.html' with upload_url=upload_position_url input_name='positions' button_list_text='Загрузить список должностей' button_upload_text='Добавить должности' %}
         </div>
     </section>
 {% endblock %}

@@ -16,6 +16,7 @@ admin.site.register(Department)
 
 class PositionInlineAdmin(admin.TabularInline):
     model = Person.position.through
+    extra = 0
 
 
 @admin.register(Person)

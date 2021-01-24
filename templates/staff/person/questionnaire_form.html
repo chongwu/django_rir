@@ -5,7 +5,7 @@
 {% block content %}
     <section class="section">
         <div class="container">
-            <h1 class="title">Анкета</h1>
+            <h1 class="title is-1">Анкета</h1>
             <form action="{% url 'questionnaires:create_questionnaire' %}" method="post">
                 {% csrf_token %}
                 {% for category in categories%}
