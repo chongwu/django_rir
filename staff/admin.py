@@ -17,6 +17,8 @@ admin.site.register(Department)
 class PositionInlineAdmin(admin.TabularInline):
     model = Person.position.through
     extra = 0
+    verbose_name = 'Место работы'
+    verbose_name_plural = 'Список сотрудников'
 
 
 @admin.register(Person)
