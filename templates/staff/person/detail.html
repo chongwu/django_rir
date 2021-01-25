@@ -46,8 +46,8 @@
                                 <tr>
                                     <td>{{ row.questionnaire_row.competence.name }}</td>
                                     <td>{{ row.date | date:'d.m.Y' }}</td>
-                                    <td>{{ row.questionnaire_row.get_human_read_value }}</td>
-                                    <td>{{ row.get_human_read_value }}</td>
+                                    <td>{{ row.get_human_read_new_value }}</td>
+                                    <td>{{ row.get_human_read_old_value }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

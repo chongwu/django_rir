@@ -44,6 +44,7 @@ def update_questionnaire(request, questionnaire_id):
                 rows_history.append(QuestionnaireRowHistory(
                     questionnaire_row=row,
                     competence_val=row.competence_val,
+                    new_competence_val=new_val,
                     date=row.date
                 ))
                 row.competence_val = new_val
