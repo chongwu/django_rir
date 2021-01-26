@@ -55,7 +55,10 @@ def upload_projects_list(request, product_id):
                     persons = []
                     persons_list = sheet.cell(row=i, column=5).value.split(',')
                     for person in persons_list:
-                        finded_person = Person.objects.get(fio=str.strip(person))
+                        try:
+                            finded_person = Person.objects.get(fio=str.strip(person))
+                        except Person.DoesNotExist:
+                            finded_person = None
                         if finded_person:
                             persons.append(finded_person)
                     # @TODO При большом количестве проектов в файле, будет происходить много запросов!
