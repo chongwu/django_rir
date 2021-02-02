@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from openpyxl import load_workbook
+from django.contrib import messages
 
 from .models import Product, Project
 from staff.models import Person
@@ -39,6 +40,7 @@ def upload_products_list(request):
                         additional_info=sheet.cell(row=i, column=4).value,
                     ))
             Product.objects.bulk_create(rows)
+            messages.success(request, 'Список продуктов успешно загружен!')
     return redirect('products:all_products')
 
 
@@ -71,4 +73,5 @@ def upload_projects_list(request, product_id):
                         product_id=product_id
                     )
                     new_project.persons.add(*persons)
+            messages.success(request, 'Список проектов успешно загружен!')
     return redirect('products:view_product', product_id)

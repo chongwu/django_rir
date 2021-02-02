@@ -8,6 +8,7 @@ from operator import attrgetter
 from openpyxl import Workbook, load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from tempfile import NamedTemporaryFile
+from django.contrib import messages
 import os
 
 
@@ -58,6 +59,7 @@ def upload_questionnaire(request, person_id):
                     competence_val=sheet.cell(row=i, column=3).value if sheet.cell(row=i, column=3).value else 0,
                 ))
             QuestionnaireRow.objects.bulk_create(rows)
+            messages.success(request, 'Анкета сотрудника успешно загружена!')
     return redirect(person)
 
 
@@ -95,6 +97,7 @@ def upload_department_list(request):
                         name=cell_val,
                     ))
             Department.objects.bulk_create(rows)
+            messages.success(request, 'Отделы успешно загружены!')
     return redirect('staff:departments_list')
 
 
@@ -116,6 +119,7 @@ def upload_positions_list(request):
                     if finded_category:
                         competence_categories.append(finded_category)
                 new_position.competence_category.add(*competence_categories)
+        messages.success(request, 'Список должностей успешно загружен!')
     return redirect('staff:departments_list')
 
 
@@ -149,4 +153,5 @@ def upload_persons_list(request, department_id):
                             department_id=department_id,
                             date_start=start_date.strftime('%Y-%m-%d')
                         )
+        messages.success(request, 'Список сотрудников успешно загружен!')
     return redirect('staff:person_list', department_id)

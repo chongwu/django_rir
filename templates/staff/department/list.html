@@ -6,6 +6,7 @@
     <section class="section">
         <div class="container">
             <h1 class="title is-1">Список отделов</h1>
+            {% include 'messages/messages_list.html' %}
             {% if departments %}
                 <ul>
                 {% for department in departments %}

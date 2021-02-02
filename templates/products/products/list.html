@@ -6,6 +6,7 @@
     <section class="section">
         <div class="container">
             <h1 class="title is-1">Список продуктов</h1>
+            {% include 'messages/messages_list.html' %}
             {% if products %}
                 <ul>
                 {% for product in products %}

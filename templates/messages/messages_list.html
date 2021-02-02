@@ -1,0 +1,8 @@
+{% if messages %}
+    {% for message in messages %}
+        <div class="notification is-{{ message.tags }}">
+            <button class="delete"></button>
+            <b>{{ message }}</b>
+        </div>
+    {% endfor %}
+{% endif %}
