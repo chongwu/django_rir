@@ -84,7 +84,7 @@ def download_questionnaire(request, person_id):
 
 
 def upload_department_list(request):
-    if request.method == 'POST' and 'positions' in request.FILES:
+    if request.method == 'POST' and 'departments' in request.FILES:
         files = request.FILES['departments']
         if files:
             book = load_workbook(files.file)
