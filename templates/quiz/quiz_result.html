@@ -1,0 +1,13 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}{{ quiz.name }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">{{ quiz.name }}</h1>
+            <p class="is-size-4 has-text-weight-bold mb-3">Тест завершен. Правильные ответы - {{ correct_percentage }}%</p>
+            <a class="button is-primary" href="{% url 'quiz:quiz_detail' quiz.id %}">Попробовать снова</a>
+        </div>
+    </section>
+{% endblock %}

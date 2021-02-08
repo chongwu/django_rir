@@ -1,0 +1,31 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}{{ quiz.name }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">{{ quiz.name }}</h1>
+            <form action="{% url 'quiz:quiz_answer' quiz.id %}" method="post">
+                {% csrf_token %}
+                {% for question in quiz.questions.all %}
+                    <div class="question mb-5">
+                        <p class="is-size-4 has-text-weight-bold mb-1">{{ forloop.counter }}. {{ question.text }}</p>
+
+                        {% for choice in question.choices.all %}
+                            <div class="field">
+                                <div class="control">
+                                    <label class="radio">
+                                        <input type="radio" value="{{ choice.id }}" name="question__{{ question.id }}">
+                                        {{ choice.text }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <input type="submit" value="Отправить ответы" class="button is-primary">
+            </form>
+        </div>
+    </section>
+{% endblock %}

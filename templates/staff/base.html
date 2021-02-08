@@ -32,9 +32,13 @@
           <a href="{% url 'reports:all_reports' %}" class="navbar-item">
             Отчеты
           </a>
+          <a href="{% url 'quiz:all_quiz' %}" class="navbar-item">
+            Тесты
+          </a>
         </div>
       </div>
     </nav>
+    {% block messages %}{% include 'messages/messages_list.html' %}{% endblock %}
     {% block content %}{% endblock %}
     {% block scripts %}
         <script type="text/javascript" src="{% static 'fontawesome_free/js/all.min.js' %}"></script>

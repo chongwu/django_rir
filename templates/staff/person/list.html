@@ -6,7 +6,6 @@
     <section class="section">
         <div class="container">
             <h1 class="title is-1">{{ department.name }} - список сотрудников</h1>
-            {% include 'messages/messages_list.html' %}
             {% if persons %}
                 <ul>
                 {% for person in persons %}

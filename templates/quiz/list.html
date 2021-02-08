@@ -1,0 +1,22 @@
+{% extends 'staff/base.html'%}
+
+{% block title%}Список тестов{% endblock%}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Список тестов</h1>
+            {% if all_quiz %}
+                <ul>
+                {% for quiz in all_quiz %}
+                    <li><a href="{% url 'quiz:quiz_detail' quiz.id %}">
+                        {{ quiz.name }}
+                    </a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                Ни одного теста ещё не добавлено.
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,5 +1,9 @@
 {% extends 'admin/change_list.html'%}
 
+{% block messages %}
+    {% include 'admin/message_list.html' %}
+{% endblock %}
+
 {% block object-tools %}
     {% include 'forms/upload_form.html' with upload_url='import_competencies/' input_name='competencies' button_list_text='Файл компетенций' button_upload_text='Добавить компетенции' %}
     {{ block.super }}

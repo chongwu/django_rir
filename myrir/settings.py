@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'competencies.apps.CompetenciesConfig',
     'questionnaires.apps.QuestionnairesConfig',
     'products.apps.ProductsConfig',
+    'quiz.apps.QuizConfig',
     'fontawesome-free',
+    'nested_admin',
 ]
 
 MIDDLEWARE = [
