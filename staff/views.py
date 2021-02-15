@@ -9,6 +9,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from tempfile import NamedTemporaryFile
 from django.contrib import messages
+from myrir.utils import group_required
 import os
 
 
@@ -16,7 +17,7 @@ import os
 def person_list(request, department_id):
     department = Department.objects.get(pk=department_id)
     # persons = Person.objects.all()
-    persons = department.workers.filter(staff__date_stop__isnull=True)
+    persons = department.workers.filter(person_staff__date_stop__isnull=True)
     return render(request, 'staff/person/list.html', {'department': department, 'persons': persons})
 
 
@@ -36,12 +37,14 @@ def person_detail(request, person_id):
     return render(request, 'staff/person/detail.html', {'person': person, 'rows': rows, 'history': history})
 
 
+@group_required('HR')
 def create_questionnaire(request, person_id):
     person = get_object_or_404(Person, tab_number=person_id)
     categories = person.position.first().competence_category.all()
     return render(request, 'staff/person/questionnaire_form.html', {'person': person, 'categories': categories})
 
 
+@group_required('HR')
 def upload_questionnaire(request, person_id):
     person = get_object_or_404(Person, tab_number=person_id)
     if request.method == 'POST':
@@ -63,6 +66,7 @@ def upload_questionnaire(request, person_id):
     return redirect(person)
 
 
+@group_required('HR')
 def download_questionnaire(request, person_id):
     person = get_object_or_404(Person, tab_number=person_id)
     categories = person.position.first().competence_category.all()
@@ -83,6 +87,7 @@ def download_questionnaire(request, person_id):
     return response
 
 
+@group_required('HR')
 def upload_department_list(request):
     if request.method == 'POST' and 'departments' in request.FILES:
         files = request.FILES['departments']
@@ -101,6 +106,7 @@ def upload_department_list(request):
     return redirect('staff:departments_list')
 
 
+@group_required('HR')
 def upload_positions_list(request):
     if request.method == 'POST' and 'positions' in request.FILES:
         files = request.FILES['positions']
@@ -123,6 +129,7 @@ def upload_positions_list(request):
     return redirect('staff:departments_list')
 
 
+@group_required('HR')
 def upload_persons_list(request, department_id):
     if request.method == 'POST' and 'persons' in request.FILES:
         files = request.FILES['persons']

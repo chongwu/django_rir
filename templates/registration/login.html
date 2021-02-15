@@ -1,0 +1,62 @@
+{% extends 'staff/base.html' %}
+{% load notification %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+    {% if form.errors %}
+        {% notification 'danger' 'Неверные логин или пароль. Пожалуйста попробуйте снова.' %}
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            {% notification 'warning' 'У Вас нет доступа к данной странице. Чтобы продолжить, войдите в систему с учетной записью, у которой есть доступ.' %}
+        {% else %}
+            {% notification 'warning' 'Пожалуйста, войдите, чтобы увидеть эту страницу.' %}
+        {% endif %}
+    {% endif %}
+
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                        <form method="post" action="{% url 'login' %}" class="box">
+                            {% csrf_token %}
+                            <div class="field">
+                                <label for="id_username" class="label">Имя пользователя</label>
+                                <div class="control has-icons-left">
+                                    <input type="text" class="input" placeholder="Имя пользователя" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username">
+                                    <span class="icon is-small is-left">
+                                        <i class="fa fa-user"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="id_password" class="label">Пароль</label>
+                                <div class="control has-icons-left">
+                                    <input type="password" name="password" placeholder="*******" class="input" autocomplete="current-password" required id="id_password">
+                                    <span class="icon is-small is-left">
+                                        <i class="fa fa-lock"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="columns">
+                                    <div class="column is-half">
+                                        <input type="submit" class="button is-primary is-fullwidth" value="Войти" />
+                                    </div>
+                                    <div class="column is-half">
+                                        <a class="button is-primary is-fullwidth" href="{% url 'password_reset' %}">Забыли пароль?</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="next" value="{{ next }}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+

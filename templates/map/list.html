@@ -1,0 +1,22 @@
+{% extends 'staff/base.html'%}
+
+{% block title%}Список карт адаптации{% endblock%}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Список карт адаптации</h1>
+            {% if maps %}
+                <ul>
+                {% for map_model in maps %}
+                    <li><a href="{% url 'adaptation:map_detail' map_model.id %}">
+                        {{ forloop.counter }}. {{ map_model.employee.fio }} (ИС заканчивается {{ map_model.get_map_end_date }})
+                    </a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                Ни одной карты адаптации ещё не добавлено.
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

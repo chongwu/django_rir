@@ -1,0 +1,12 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}Выход из системы{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <p class="is-size-4 has-text-weight-bold mb-1">Вы вышли из системы!</p>
+            <a class="button is-primary" href="{% url 'login'%}">Кликните здесь, чтобы войти снова</a>
+        </div>
+    </section>
+{% endblock %}

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import django_heroku
+# Heroku: Update database configuration from $DATABASE_URL.
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,13 +29,17 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+# Настройка почты, с которй будет приходить информация об ошибках
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ggstfugg@gmail.com' #С которого будет приходить сообщение
+EMAIL_HOST_USER = 'ggstfugg@gmail.com'  # С которого будет приходить сообщение
 EMAIL_HOST_PASSWORD = 'ghjcnjzobr'
 EMAIL_PORT = 587
 
 ADMINS = [('Denis', 'jokerd1@gmail.com')]
+
+# Перенаправление на домашнюю страницу после входа (по умолчанию перенаправляет на /accounts/profile/)
+LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 
@@ -49,6 +55,7 @@ INSTALLED_APPS = [
     'questionnaires.apps.QuestionnairesConfig',
     'products.apps.ProductsConfig',
     'quiz.apps.QuizConfig',
+    'adaptation.apps.AdaptationConfig',
     'fontawesome-free',
     'nested_admin',
 ]
@@ -69,8 +76,7 @@ ROOT_URLCONF = 'myrir.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,8 +96,14 @@ WSGI_APPLICATION = 'myrir.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('RIRDB'),
+        'USER': os.getenv('RIRDB_USER'),
+        'PASSWORD': os.getenv('RIRDB_PASSWORD'),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -147,8 +159,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # SESSION_COOKIE_SECURE = True
 # SECURE_SSL_REDIRECT = True
 
-# Heroku: Update database configuration from $DATABASE_URL.
-import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)

@@ -20,7 +20,7 @@ def corporate_report(request):
 
 def department_report(request, department_id):
     department = Department.objects.get(pk=department_id)
-    persons = department.workers.filter(staff__date_stop__isnull=True).all()
+    persons = department.workers.filter(person_staff__date_stop__isnull=True).all()
     department_all = QuestionnaireRow.objects.filter(questionnaire__person__tab_number__in=persons)\
         .filter(competence_val__gt=0)\
         .values('competence__name', 'competence__category__name')\

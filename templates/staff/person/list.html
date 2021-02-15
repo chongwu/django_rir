@@ -1,4 +1,5 @@
 {% extends 'staff/base.html' %}
+{% load rir_filters %}
 
 {% block title %}{{ department.name }} - сотрудники{% endblock %}
 
@@ -17,8 +18,10 @@
             {% else %}
                 Сотрудников ещё нет
             {% endif %}
-            {% url 'staff:upload_persons_list' department.id as upload_url %}
-            {% include 'forms/upload_form.html' with upload_url=upload_url input_name='persons' button_list_text='Загрузить список сотрудников' button_upload_text='Добавить сотрудников' %}
+            {% if request.user|has_groups:'HR' %}
+                {% url 'staff:upload_persons_list' department.id as upload_url %}
+                {% include 'forms/upload_form.html' with upload_url=upload_url input_name='persons' button_list_text='Загрузить список сотрудников' button_upload_text='Добавить сотрудников' %}
+            {% endif %}
         </div>
     </section>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from staff.models import Person
 from questionnaires.models import QuestionnaireRow, Questionnaire, QuestionnaireRowHistory
+from myrir.utils import group_required
 
 
 # Create your views here.
@@ -20,6 +21,7 @@ def create_questionnaire(request):
     return redirect(person)
 
 
+@group_required('HR')
 def edit_questionnaire(request, questionnaire_id):
     questionnaire = Questionnaire.objects.prefetch_related('person').get(pk=questionnaire_id)
     person = Person.objects.get(pk=questionnaire.person_id)

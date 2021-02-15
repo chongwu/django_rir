@@ -1,0 +1,19 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}Карта адаптации #{{ map_model.id }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Карта адаптации #{{ map_model.id }}</h1>
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Сотрудник</div>
+                <p>{{ map_model.employee.fio }} - {{ map_model.employee.current_department }}, {{ map_model.employee.current_position }}</p>
+            </div>
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Дата окончания ИС</div>
+                <p>{{ map_model.get_map_end_date }}</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

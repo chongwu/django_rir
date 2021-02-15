@@ -23,7 +23,8 @@ class PositionInlineAdmin(admin.TabularInline):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('tab_number', 'fio', 'education', 'experience', 'current_department', 'current_position')
-    fields = ('tab_number', 'fio', 'education', 'experience')
+    list_display = ('tab_number', 'fio', 'education', 'experience', 'current_department', 'current_position',
+                    'employment_form', 'status')
+    fields = ('tab_number', 'fio', 'education', 'experience', 'extra_skill', 'employment_form', 'status')
 
     inlines = (PositionInlineAdmin,)

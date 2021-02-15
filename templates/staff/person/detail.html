@@ -1,4 +1,5 @@
 {% extends 'staff/base.html' %}
+{% load rir_filters %}
 
 {% block title %}Детальная информация - {{ person.fio }}{% endblock %}
 
@@ -8,9 +9,11 @@
             <h1 class="title is-1">{{ person.fio }} - {{ person.current_position }}</h1>
             {% if rows %}
                 <h4 class="title is-4">Компетенции сотрудника:</h4>
-                 <p>
-                    <a href="{% url 'questionnaire:edit_questionnaire' person.questionnaires.first.id %}" class="button is-primary">Редактировать анкету</a>
-                </p>
+                {% if request.user|has_groups:'HR' %}
+                    <p>
+                        <a href="{% url 'questionnaire:edit_questionnaire' person.questionnaires.first.id %}" class="button is-primary">Редактировать анкету</a>
+                    </p>
+                {% endif %}
                 <table class="table is-fullwidth is-hoverable is-bordered mt-3">
                     <thead>
                         <tr>

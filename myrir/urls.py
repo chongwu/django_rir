@@ -29,4 +29,6 @@ urlpatterns = [
     path('reports/', include('reports.urls', namespace='reports')),
     path('products/', include('products.urls', namespace='products')),
     path('quiz/', include('quiz.urls', namespace='quiz')),
+    path('adaptation/', include('adaptation.urls', namespace='adaptation')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

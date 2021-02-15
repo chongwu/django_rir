@@ -4,6 +4,7 @@ from django.contrib import messages
 
 from .models import Product, Project
 from staff.models import Person
+from myrir.utils import group_required
 
 
 # Create your views here.
@@ -23,6 +24,7 @@ def view_project(request, product_id, project_id):
     return render(request, 'products/projects/detail.html', {'project': project, 'product': product})
 
 
+@group_required('HR')
 def upload_products_list(request):
     if request.method == 'POST' and 'products' in request.FILES:
         files = request.FILES['products']
@@ -44,6 +46,7 @@ def upload_products_list(request):
     return redirect('products:all_products')
 
 
+@group_required('HR')
 def upload_projects_list(request, product_id):
     if request.method == 'POST' and 'projects' in request.FILES:
         files = request.FILES['projects']

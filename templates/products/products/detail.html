@@ -1,4 +1,5 @@
 {% extends 'staff/base.html'%}
+{% load rir_filters %}
 
 {% block title%}Продукт - {{ product }}{% endblock %}
 
@@ -34,8 +35,10 @@
             {% else %}
                 Не добавлено ни одного проекта.
             {% endif %}
-            {% url 'products:upload_projects_list' product.id as upload_url %}
-            {% include 'forms/upload_form.html' with upload_url=upload_url input_name='projects' button_list_text='Загрузить список проектов' button_upload_text='Добавить проекты' %}
+            {% if request.user|has_groups:'HR' %}
+                {% url 'products:upload_projects_list' product.id as upload_url %}
+                {% include 'forms/upload_form.html' with upload_url=upload_url input_name='projects' button_list_text='Загрузить список проектов' button_upload_text='Добавить проекты' %}
+            {% endif %}
         </div>
     </section>
 {% endblock %}

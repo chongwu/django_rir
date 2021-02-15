@@ -1,4 +1,5 @@
 {% extends 'staff/base.html' %}
+{% load rir_filters %}
 
 {% block title %}Список отделов{% endblock %}
 
@@ -17,10 +18,12 @@
             {% else %}
                 Не добавлено ни одного отдела.
             {% endif %}
-            {% url 'staff:upload_department_list' as upload_dep_url %}
-            {% include 'forms/upload_form.html' with upload_url=upload_dep_url input_name='departments' button_list_text='Загрузить список отделов' button_upload_text='Добавить отделы' %}
-            {% url 'staff:upload_positions_list' as upload_position_url %}
-            {% include 'forms/upload_form.html' with upload_url=upload_position_url input_name='positions' button_list_text='Загрузить список должностей' button_upload_text='Добавить должности' %}
+            {% if request.user|has_groups:'HR' %}
+                {% url 'staff:upload_department_list' as upload_dep_url %}
+                {% include 'forms/upload_form.html' with upload_url=upload_dep_url input_name='departments' button_list_text='Загрузить список отделов' button_upload_text='Добавить отделы' %}
+                {% url 'staff:upload_positions_list' as upload_position_url %}
+                {% include 'forms/upload_form.html' with upload_url=upload_position_url input_name='positions' button_list_text='Загрузить список должностей' button_upload_text='Добавить должности' %}
+            {% endif %}
         </div>
     </section>
 {% endblock %}

@@ -4,6 +4,17 @@ from competencies.models import Category
 from itertools import groupby
 from operator import attrgetter
 
+EMPLOYMENT_FORMS = [
+    (1, 'Офисная'),
+    (2, 'Гибридная'),
+    (3, 'Удаленная'),
+]
+
+WORK_STATUSES = [
+    (1, 'Испытательный срок'),
+    (2, 'Работа')
+]
+
 
 # Create your models here.
 class Department(models.Model):
@@ -21,6 +32,7 @@ class Position(models.Model):
     name = models.CharField(max_length=45, verbose_name='Наименование должности', unique=True)
     competence_category = models.ManyToManyField(Category, related_name='positions',
                                                  verbose_name='Категория компетенций')
+    chief = models.BooleanField(verbose_name='Является руководителем', default=False)
 
     def __str__(self):
         return self.name
@@ -38,6 +50,11 @@ class Person(models.Model):
     position = models.ManyToManyField(Position, through='Staff', related_name='persons', verbose_name='Должность')
     department = models.ManyToManyField(Department, through='Staff', related_name='workers', verbose_name='Отдел')
     extra_skill = models.TextField(verbose_name='Дополнительные навыки', blank=True, null=True)
+    employment_form = models.IntegerField(choices=EMPLOYMENT_FORMS, default=1,
+                                          verbose_name='Форма занятости')
+    status = models.IntegerField(choices=WORK_STATUSES, default=2, verbose_name='Статус работы')
+    mentor = models.ForeignKey("Person", on_delete=models.CASCADE, related_name='students', verbose_name='Наставник',
+                               blank=True, null=True)
 
     class Meta:
         ordering = ('-fio',)
@@ -68,7 +85,7 @@ class Person(models.Model):
 
 
 class Staff(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Сотрудник')
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Сотрудник', related_name='person_staff')
     position = models.ForeignKey(Position, on_delete=models.CASCADE, verbose_name='Должность')
     date_start = models.DateField(verbose_name='Начало работы')
     date_stop = models.DateField(blank=True, null=True, verbose_name='Окончание работы')
