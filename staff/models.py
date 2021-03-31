@@ -28,8 +28,8 @@ class Department(models.Model):
     name = models.CharField(max_length=128, verbose_name='Наименование отдела', unique=True)
 
     def get_chief(self):
-        chief = self.persons.filter(position__chief=True).first()
-        return chief.person if chief else None
+        chief_person = self.persons.filter(position__chief=True).first()
+        return chief_person.person if chief_person else None
 
     def __str__(self):
         return self.name
