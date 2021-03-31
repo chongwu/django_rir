@@ -7,6 +7,12 @@
     <section class="section">
         <div class="container">
             <h1 class="title is-1">{{ person.fio }} - {{ person.current_position }}</h1>
+            {% if person.map %}
+                <h4 class="title is-4"><a href="{% url 'adaptation:map_detail' person.map.id %}">Карта адаптации</a></h4>
+            {% endif %}
+            {% if person.dev_plan %}
+                <h4 class="title is-4"><a href="{% url 'development_plan:plan_detail' person.dev_plan.id %}">Индивидуальный план развития</a></h4>
+            {% endif %}
             {% if rows %}
                 <h4 class="title is-4">Компетенции сотрудника:</h4>
                 {% if request.user|has_groups:'HR' %}

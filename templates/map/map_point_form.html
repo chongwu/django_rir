@@ -1,0 +1,19 @@
+<div class="mb-6">
+    <form class="add-point-form {# is-hidden #}" method="post" action="{% url 'adaptation:add_map_point' map_model.id stage %}">
+        {% csrf_token %}
+        <div class="field">
+            <label class="label" for="map-point-name">Наименование пункта карты</label>
+            <div class="control">
+                <input id="map-point-name" name="map-point-name" class="input" type="text" placeholder="Наименование пункта карты" required>
+            </div>
+        </div>
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="add-point-button button is-link is-primary">Добавить</button>
+            </div>
+            <div class="control">
+                <button class="button is-link is-danger">Отмена</button>
+            </div>
+        </div>
+    </form>
+</div>

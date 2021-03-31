@@ -1,0 +1,41 @@
+{% load notification %}
+{% load rir_filters %}
+
+<h5 class="title is-5">{{ group }}</h5>
+<table class="table is-fullwidth">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Название программного продукта</th>
+            <th>Раздел (темы)</th>
+            <th>Инструкции для самообучения ссылки</th>
+            <th>Уровень освоения/соотв. роль</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for point in points %}
+        <tr>
+            <td>{{ forloop.counter }}.</td>
+            <td>{% if point.map_point %}{{ point.map_point.name }}{% else %}{{ point.name }}{% endif %}</td>
+            <td>{{ point.map_point.section|default:"-" }}</td>
+            <td>
+                {% for file in point.map_point.extra_files.all %}
+                    <p><a href="{% if file.type == 1 %} {{ file.extra_info_file.url }} {% else %} {{ file.link }} {% endif %}">{{ file.name }}</a></p>
+                {% empty %}
+                    -
+                {% endfor %}
+            </td>
+            {% if request.user|has_groups:'HR' or user_is_chief %}
+                <td>
+                    {% rating_select point %}
+                    <button class="button is-primary save-data" data-point="{{ point.id }}">ОК</button>
+                </td>
+            {% else %}
+                 <td>
+                    {{ point.get_rating }}
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

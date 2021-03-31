@@ -1,0 +1,10 @@
+<div class="select">
+    <select id="map-point-{{ point.id }}">
+        <option  value="">---Выберите пункт---</option>
+        {% for value, name in point.get_all_ratings %}
+            <option value="{{ value }}" {% if point.rating == value %} selected="selected" {% endif %}>
+                {{ name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>

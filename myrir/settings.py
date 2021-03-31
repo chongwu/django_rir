@@ -56,8 +56,10 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'quiz.apps.QuizConfig',
     'adaptation.apps.AdaptationConfig',
+    'development_plan.apps.DevelopmentPlanConfig',
     'fontawesome-free',
     'nested_admin',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -137,6 +139,21 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'upload_files')
+# MEDIA_URL = '/uploaded/'
+
+AWS_ACCESS_KEY_ID = 'AKIA4HYFB62JDJOMPX72'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'cpirug-django-s3'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_DEFAULT_ACL = 'public-read'
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+DEFAULT_FILE_STORAGE = 'myrir.storage_backends.MediaStorage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

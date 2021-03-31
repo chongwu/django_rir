@@ -31,4 +31,5 @@ urlpatterns = [
     path('quiz/', include('quiz.urls', namespace='quiz')),
     path('adaptation/', include('adaptation.urls', namespace='adaptation')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('development_plan/', include('development_plan.urls', namespace='development_plan'))
 ]

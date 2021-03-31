@@ -1,19 +1,171 @@
 {% extends 'staff/base.html' %}
+{% load static %}
+{% load rir_filters %}
 
 {% block title %}Карта адаптации #{{ map_model.id }}{% endblock %}
 
 {% block content %}
+    {% is_mentor request.user map_model.employee.tab_number as user_is_mentor %}
+    {% is_chief request.user map_model.employee.tab_number as user_is_chief %}
     <section class="section">
         <div class="container">
             <h1 class="title is-1">Карта адаптации #{{ map_model.id }}</h1>
+            <div>
+                <a class="button is-primary mb-3" href="{% url 'adaptation:export' map_model.id %}">
+                    <span class="pr-2"><i class="far fa-file-word"></i></span>
+                    Экспортировать в Word
+                </a>
+            </div>
             <div class="field-container mb-4">
                 <div class="title is-5 mb-1">Сотрудник</div>
-                <p>{{ map_model.employee.fio }} - {{ map_model.employee.current_department }}, {{ map_model.employee.current_position }}</p>
+                <p>
+                    <a href="{% url "staff:person_detail" map_model.employee.tab_number %}">{{ map_model.employee.fio }}</a>
+                    - <a href="{% url "staff:person_list" map_model.employee.current_department.id %}">{{ map_model.employee.current_department }}</a>, {{ map_model.employee.current_position }}
+                </p>
             </div>
             <div class="field-container mb-4">
-                <div class="title is-5 mb-1">Дата окончания ИС</div>
+                <div class="title is-5 mb-1">Дата окончания испытательного срока</div>
                 <p>{{ map_model.get_map_end_date }}</p>
             </div>
+            <h4 class="title is-4">Разделы карты</h4>
+            {% for group, points in grouped_points.items %}
+                {% with stage=forloop.counter|stringformat:"s" %}
+                    {% with table_template="map/map_table_"|add:stage|add:".html" %}
+                        {% include table_template %}
+                    {% endwith %}
+                {% endwith %}
+            {% endfor %}
+            <h4 class="title is-4">Результат прохождения срока испытания</h4>
+            {% with result=map_model.map_result_float %}
+                <h5 class="title is-5">
+                    {% if result < 70 %}
+                        Неудовлетворительный
+                    {% elif result >= 70 and result < 90 %}
+                        Удовлетворительный
+                    {% elif result >= 90 %}
+                        Успешный
+                    {% endif %}
+                     - {{ map_model.map_result_percent }}
+                </h5>
+            {% endwith %}
+            {% for conclusion_type, conclusion_dict in grouped_conclusions.items %}
+                {% if request.user|has_groups:'HR' and conclusion_type >= 3 or user_is_mentor and conclusion_type == 2 or user_is_chief and conclusion_type == 1 %}
+                    <h4 class="title is-4">{{ conclusion_dict.header }}</h4>
+                    {% include 'map/conclusion_form.html' %}
+                {% endif %}
+            {% endfor %}
         </div>
     </section>
+{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link href="{% static 'css/bulma-calendar.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/bulma-calendar.js' %}"></script>
+    <script type="text/javascript">
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const calOptions = {
+            dateFormat: 'DD.MM.YYYY'
+        }
+        const calendars = bulmaCalendar.attach('[type="date"]', calOptions);
+        calendars.forEach(calendar => {
+            // Add listener to select event
+            if (calendar.element.defaultValue !== "") {
+                calendar.date.start = new Date(calendar.element.defaultValue)
+                calendar.save();
+                calendar.refresh();
+            }
+        });
+
+        const csrftoken = getCookie('csrftoken');
+        const buttons = document.querySelectorAll("button.save-data");
+        buttons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const pointId = button.dataset.point;
+                const pointRating = document.getElementById('map-point-' + pointId);
+                const pointCompletingDate = document.getElementById('map-point-date-' + pointId);
+                fetch('/adaptation/map-point/' + pointId + '/add-data/', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({
+                        'point_rating': pointRating.value,
+                        'point_completing_date': (pointCompletingDate && pointCompletingDate.value) || null
+                    })
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    {#pointRating.disabled = true;#}
+                    {#button.disabled = true;#}
+                })
+                .catch(data => {
+                    console.log(data);
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        const add_buttons = document.querySelectorAll("button.add-point-button");
+        add_buttons.forEach(button => {
+            button.addEventListener("click",function(event) {
+                event.preventDefault();
+                let form_el = button.closest("form.add-point-form");
+                let mapPointName = form_el.elements["map-point-name"].value;
+                if(mapPointName !== ""){
+                    fetch(form_el.action, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': csrftoken,
+                        },
+                        body: JSON.stringify({
+                            'map_point_name': mapPointName
+                        })
+                    })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        form_el.elements["map-point-name"].value = "";
+                        location.reload();
+                        {#window.location = window.location.href + "#" + JSON.parse(data.map_point)[0].pk;#}
+                        {#pointRating.disabled = true;#}
+                        {#button.disabled = true;#}
+                    })
+                    .catch(data => {
+                        console.log(data);
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

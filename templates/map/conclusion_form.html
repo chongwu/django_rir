@@ -1,0 +1,36 @@
+<div class="mb-6">
+    <form method="post" action="{% if conclusion_dict.conclusion %}{% url 'adaptation:edit_map_conclusion' map_model.id conclusion_dict.conclusion.id %}{% else %}{% url 'adaptation:add_map_conclusion' map_model.id conclusion_type %}{% endif %}">
+        {% csrf_token %}
+        <div class="field">
+            <label class="label" for="map-point-name-{{ conclusion_type }}">Комментарии</label>
+            <div class="control">
+                <textarea id="map-point-name-{{ conclusion_type }}" name="comment" class="textarea" placeholder="Комментарии" required>{% if conclusion_dict.conclusion %}{{ conclusion_dict.conclusion.comment }}{% endif %}</textarea>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" name="conclusion_value" value="1" required {% if conclusion_dict.conclusion and conclusion_dict.conclusion.final_value == 1 %}checked{% endif %}>
+                    ИС успешно завершен
+                </label>
+                <label class="radio">
+                    <input type="radio" name="conclusion_value" value="2" {% if conclusion_dict.conclusion and conclusion_dict.conclusion.final_value == 2 %}checked{% endif %}>
+                    Продлить АП
+                </label>
+                <label class="radio">
+                    <input type="radio" name="conclusion_value" value="3" {% if conclusion_dict.conclusion and conclusion_dict.conclusion.final_value == 3 %}checked{% endif %}>
+                    ИС не пройден
+                </label>
+                <label class="radio">
+                    <input type="radio" name="conclusion_value" value="4" {% if conclusion_dict.conclusion and conclusion_dict.conclusion.final_value == 4 %}checked{% endif %}>
+                    Рекомендовать досрочно завершить ИС
+                </label>
+            </div>
+        </div>
+        <div class="field is-grouped">
+            <div class="control">
+                <input type="submit" class="add-point-button button is-link is-primary" value="{% if conclusion_dict.conclusion %}Сохранить{% else %}Добавить{% endif %}"/>
+            </div>
+        </div>
+    </form>
+</div>

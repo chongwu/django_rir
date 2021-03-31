@@ -27,7 +27,7 @@ def departments_list(request):
 
 
 def person_detail(request, person_id):
-    person = get_object_or_404(Person, tab_number=person_id)
+    person = get_object_or_404(Person.objects.select_related('map'), tab_number=person_id)
     questionnaire = person.questionnaires.prefetch_related('rows', 'rows__competence', 'rows__competence__category').first()
     history = QuestionnaireRowHistory.objects.filter(questionnaire_row__questionnaire=questionnaire)\
         .prefetch_related('questionnaire_row__competence').all()
@@ -148,12 +148,13 @@ def upload_persons_list(request, department_id):
                         tab_number=cell_val,
                         fio=sheet.cell(row=i, column=2).value,
                         education=sheet.cell(row=i, column=3).value,
-                        experience=sheet.cell(row=i, column=4).value,
-                        extra_skill=sheet.cell(row=i, column=5).value,
+                        institution=sheet.cell(row=i, column=4).value,
+                        experience=sheet.cell(row=i, column=5).value,
+                        extra_skill=sheet.cell(row=i, column=6).value,
                     )
-                    position = Position.objects.get(name=str.strip(sheet.cell(row=i, column=6).value))
+                    position = Position.objects.get(name=str.strip(sheet.cell(row=i, column=7).value))
                     if position:
-                        start_date = sheet.cell(row=i, column=7).value
+                        start_date = sheet.cell(row=i, column=8).value
                         Staff.objects.create(
                             person=new_person,
                             position=position,

@@ -1,0 +1,70 @@
+{% load notification %}
+{% load rir_filters %}
+
+<h5 class="title is-5">{{ group }}</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Поставленные задачи</th>
+            <th>Срок исполнения</th>
+            <th>Статус выполнения</th>
+            <th>Дата исполнения</th>
+            <th>Необходимая информация, документы и т.д. для выполнения</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for point in points %}
+        <tr id="{{ point.id }}">
+            <td>{{ forloop.counter }}.</td>
+            <td>{% if point.map_point %}{{ point.map_point.name }}{% else %}{{ point.name }}{% endif %}</td>
+            <td>{{ point.get_completing_date }}</td>
+            {% if request.user.is_staff or user_is_mentor %}
+                <td>
+                    {% rating_select point %}
+                </td>
+                <td>
+                    <input type="date" id="map-point-date-{{ point.id }}" {% if point.date_of_complete %} value="{{ point.date_of_complete|date:'m/d/Y' }}" {% endif %} />
+                    <button class="button is-primary is-fullwidth mt-2 save-data" data-point="{{ point.id }}">ОК</button>
+                </td>
+            {% else %}
+                <td>
+                    {{ point.get_rating }}
+                </td>
+                <td>
+                    {{ point.date_of_complete }}
+                </td>
+            {% endif %}
+            <td>
+                {% for file in point.map_point.extra_files.all %}
+                    <p><a href="{% if file.type == 1 %} {{ file.extra_info_file.url }} {% else %} {{ file.link }} {% endif %}">{{ file.name }}</a></p>
+                {% empty %}
+                    -
+                {% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if request.user|has_groups:'HR' %}
+    <div class="mb-6">
+{#        <button class="button is-primary add-point">Добавить новый пункт</button>#}
+        <form class="add-point-form {# is-hidden #}" method="post" action="{% url 'adaptation:add_map_point' map_model.id stage %}">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="map-point-name">Наименование пункта карты</label>
+                <div class="control">
+                    <input id="map-point-name" name="map-point-name" class="input" type="text" placeholder="Наименование пункта карты" required>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="add-point-button button is-link is-primary">Добавить</button>
+                </div>
+                <div class="control">
+                    <button class="button is-link is-danger">Отмена</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endif %}

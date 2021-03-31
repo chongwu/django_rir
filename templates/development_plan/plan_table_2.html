@@ -1,0 +1,24 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Развитие ПТЗН/Ценности</th>
+            <th>Тип активности</th>
+            <th>Наименование</th>
+            <th>Объем (ак. ч.)</th>
+            <th>Начато (запланировано)</th>
+            <th>Завершено</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in section_activities %}
+            <tr>
+                <td>{{ activity.values|default:'-' }}</td>
+                <td>{{ activity.get_type }}</td>
+                <td>{{ activity.name }}</td>
+                <td>{{ activity.hours }}</td>
+                <td>{{ activity.start }}</td>
+                <td>{{ activity.stop }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,71 @@
+{% extends 'staff/base.html' %}
+
+{% block title %}Индивидуальный план развития #{{ plan.id }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-1">Индивидуальный план развития #{{ plan.id }}</h1>
+            <div>
+                <a class="button is-primary mb-3" href="{% url 'development_plan:plan_export' plan.id %}">
+                    <span class="pr-2"><i class="far fa-file-word"></i></span>
+                    Экспортировать в Word
+                </a>
+            </div>
+            <div class="field-container mb-4">
+                <div class="title is-5 mb-1">Сотрудник</div>
+                <p>
+                    <a href="{% url "staff:person_detail" plan.employee.tab_number %}">{{ plan.employee.fio }}</a>
+                    - <a href="{% url "staff:person_list" plan.employee.current_department.id %}">{{ plan.employee.current_department }}</a>, {{ plan.employee.current_position }}
+                </p>
+            </div>
+            {% if activities %}
+                <h3 class="title is-3">Обучающие и развивающие мероприятия</h3>
+                {% for activity_type, section_activities in activities.items %}
+                    <h4 class="title is-4">{{ activity_type }}</h4>
+                    {% with first_activity=section_activities|first %}
+                        {% with first_activity_status=first_activity.activity_status|stringformat:"s"  %}
+                            {% with table_template="development_plan/plan_table_"|add:first_activity_status|add:".html" %}
+                                {% include table_template %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                {% endfor %}
+            {% endif %}
+            {% if plan.plan_activities.all %}
+                <h3 class="title is-3">Планирование дальнейших активностей (для заметок на встрече с руководителем)</h3>
+            {% endif %}
+            <h3 class="title is-3">
+                Прогресс индивидуального плана развития
+            </h3>
+            <canvas id="planChart"></canvas>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            let ctx = document.getElementById('planChart');
+            let planChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: {{ labels|safe }},
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: {{ data|safe }},
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)'
+                        ],
+                        hoverOffset: 4
+                    }],
+
+                },
+            });
+        };
+    </script>
+{% endblock %}
