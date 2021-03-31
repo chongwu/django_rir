@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 
 from adaptation.models import Map, MapPoint, MapPointValue
-from staff.models import Staff
+from staff.models import Staff, Position
 
 
 @receiver(post_save, sender=Staff)
@@ -23,3 +23,10 @@ def set_created_attribute(sender, instance, created,  **kwargs):
             for competence in category.competencies.all():
                 map_point_model = MapPointValue(map=person_map, competence=competence, stage=4)
                 map_point_model.save()
+
+
+@receiver(post_save, sender=Position)
+def adaptation_map_point_config(sender, instance, created,  **kwargs):
+    map_points = MapPoint.objects.filter(point_type=1).all()
+    for map_point in map_points:
+        map_point.positions.add(instance)
