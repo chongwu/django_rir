@@ -15,7 +15,7 @@ class Category(models.Model):
 
 
 class Competence(models.Model):
-    name = models.CharField(max_length=255, unique=True, verbose_name='Имя')
+    name = models.CharField(max_length=255, verbose_name='Имя')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='competencies', verbose_name='Категория')
 
     def __str__(self):
