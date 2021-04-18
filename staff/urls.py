@@ -6,7 +6,7 @@ app_name = 'staff'
 urlpatterns = [
     path('', views.departments_list, name='departments_list'),
     path('departments/<int:department_id>/', views.person_list, name='person_list'),
-    path('departments/<int:department_id>/upload/', views.upload_persons_list, name='upload_persons_list'),
+    # path('departments/<int:department_id>/upload/', views.upload_persons_list, name='upload_persons_list'),
     path('departments/upload/', views.upload_department_list, name='upload_department_list'),
     path('departments/positions/upload/', views.upload_positions_list, name='upload_positions_list'),
     path('persons/<int:person_id>/', views.person_detail, name='person_detail'),
@@ -17,4 +17,8 @@ urlpatterns = [
     path('persons/<int:person_id>/questionnaire/download/',
          views.download_questionnaire,
          name='person_download_questionnaire'),
+    path('json/users/', views.json_users, name='json_users'),
+    path('json/persons/', views.json_persons, name='json_persons'),
+    path('json/departments/', views.json_departments, name='json_departments'),
+    path('json/positions/', views.json_positions, name='json_positions'),
 ]

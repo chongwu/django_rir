@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
 from django.utils.encoding import smart_str
-from .models import Person, Department, Position, Staff
+from django.http import HttpResponseRedirect
+from django.core import serializers
+from django.contrib.auth.models import User
+from .models import Person, Department, Position, Staff, EMPLOYMENT_FORMS_DICT, WORK_STATUSES_DICT
 from competencies.models import Category
 from questionnaires.models import Questionnaire, QuestionnaireRow, QuestionnaireRowHistory
 from itertools import groupby
@@ -130,10 +133,10 @@ def upload_positions_list(request):
 
 
 @group_required('HR')
-def upload_persons_list(request, department_id):
+def upload_persons_list(request):
     if request.method == 'POST' and 'persons' in request.FILES:
         files = request.FILES['persons']
-        # @TODO Добавить обработку ошибок, если загружается не xlsx файл
+        # TODO Добавить обработку ошибок, если загружается не xlsx файл
         book = load_workbook(files.file)
         sheet = book.active
         for i in range(2, sheet.max_row + 1):
@@ -144,22 +147,57 @@ def upload_persons_list(request, department_id):
                 except Person.DoesNotExist:
                     exist_person = None
                 if not exist_person:
+                    # TODO Преобразовать в функцию!
+                    try:
+                        user = User.objects.get(username=sheet.cell(row=i, column=3).value)
+                    except User.DoesNotExist:
+                        user = None
+                    try:
+                        mentor = Person.objects.get(fio=sheet.cell(row=i, column=10).value)
+                    except Person.DoesNotExist:
+                        mentor = None
                     new_person = Person.objects.create(
                         tab_number=cell_val,
                         fio=sheet.cell(row=i, column=2).value,
-                        education=sheet.cell(row=i, column=3).value,
-                        institution=sheet.cell(row=i, column=4).value,
-                        experience=sheet.cell(row=i, column=5).value,
-                        extra_skill=sheet.cell(row=i, column=6).value,
+                        user=user,
+                        education=sheet.cell(row=i, column=4).value,
+                        institution=sheet.cell(row=i, column=5).value,
+                        experience=sheet.cell(row=i, column=6).value,
+                        extra_skill=sheet.cell(row=i, column=7).value,
+                        employment_form=list(EMPLOYMENT_FORMS_DICT.keys())[list(EMPLOYMENT_FORMS_DICT.values()).index(sheet.cell(row=i, column=8).value)],
+                        status=list(WORK_STATUSES_DICT.keys())[list(WORK_STATUSES_DICT.values()).index(sheet.cell(row=i, column=9).value)],
+                        mentor=mentor,
                     )
-                    position = Position.objects.get(name=str.strip(sheet.cell(row=i, column=7).value))
+                    department = Department.objects.get(name=sheet.cell(row=i, column=11).value)
+                    position = Position.objects.get(name=sheet.cell(row=i, column=12).value)
                     if position:
-                        start_date = sheet.cell(row=i, column=8).value
+                        start_date = sheet.cell(row=i, column=13).value
                         Staff.objects.create(
                             person=new_person,
                             position=position,
-                            department_id=department_id,
+                            department=department,
                             date_start=start_date.strftime('%Y-%m-%d')
                         )
         messages.success(request, 'Список сотрудников успешно загружен!')
-    return redirect('staff:person_list', department_id)
+    # return redirect('staff:person_list', department_id)
+    return HttpResponseRedirect('../')
+
+
+def json_users(request):
+    data = serializers.serialize("json", User.objects.all(), fields=('username',))
+    return HttpResponse(data, content_type='application/json')
+
+
+def json_persons(request):
+    data = serializers.serialize("json", Person.objects.all(), fields=('fio',))
+    return HttpResponse(data, content_type='application/json')
+
+
+def json_departments(request):
+    data = serializers.serialize("json", Department.objects.all(), fields=('name',))
+    return HttpResponse(data, content_type='application/json')
+
+
+def json_positions(request):
+    data = serializers.serialize("json", Position.objects.all(), fields=('name',))
+    return HttpResponse(data, content_type='application/json')

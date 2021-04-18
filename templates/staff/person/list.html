@@ -18,10 +18,10 @@
             {% else %}
                 Сотрудников ещё нет
             {% endif %}
-            {% if request.user|has_groups:'HR' %}
-                {% url 'staff:upload_persons_list' department.id as upload_url %}
-                {% include 'forms/upload_form.html' with upload_url=upload_url input_name='persons' button_list_text='Загрузить список сотрудников' button_upload_text='Добавить сотрудников' %}
-            {% endif %}
+{#            {% if request.user|has_groups:'HR' %}#}
+{#                {% url 'staff:upload_persons_list' department.id as upload_url %}#}
+{#                {% include 'forms/upload_form.html' with upload_url=upload_url input_name='persons' button_list_text='Загрузить список сотрудников' button_upload_text='Добавить сотрудников' %}#}
+{#            {% endif %}#}
         </div>
     </section>
 {% endblock %}

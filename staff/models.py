@@ -22,6 +22,11 @@ WORK_STATUSES = [
     (2, 'Работа')
 ]
 
+WORK_STATUSES_DICT = {
+    1: 'Испытательный срок',
+    2: 'Работа'
+}
+
 
 # Create your models here.
 class Department(models.Model):

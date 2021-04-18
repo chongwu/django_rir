@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block object-tools %}
-    {% include 'forms/upload_form.html' with upload_url='import_competencies/' input_name='competencies' button_list_text='Файл компетенций' button_upload_text='Добавить компетенции' %}
+    {% if module_name == 'Категории' %}
+        {% include 'forms/upload_form.html' with upload_url='import_competencies/' input_name='competencies' button_list_text='Файл компетенций' button_upload_text='Добавить компетенции' %}
+    {% elif module_name == 'Сотрудники'%}
+        {% include 'forms/upload_form.html' with upload_url='import_persons/' input_name='persons' button_list_text='Загрузить список сотрудников' button_upload_text='Добавить сотрудников' %}
+    {% endif %}
     {{ block.super }}
 {% endblock %}
