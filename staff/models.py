@@ -49,7 +49,7 @@ class Department(models.Model):
 class Position(CloneMixin, models.Model):
     name = models.CharField(max_length=45, verbose_name='Наименование должности', unique=True)
     competence_category = models.ManyToManyField(Category, related_name='positions',
-                                                 verbose_name='Категория компетенций')
+                                                 verbose_name='Категория компетенций', blank=True)
     chief = models.BooleanField(verbose_name='Является руководителем', default=False)
 
     _clone_m2m_fields = ['competence_category']
