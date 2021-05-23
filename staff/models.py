@@ -4,6 +4,7 @@ from competencies.models import Category
 from itertools import groupby
 from operator import attrgetter
 from django.contrib.auth.models import User
+from model_clone import CloneMixin
 
 EMPLOYMENT_FORMS = [
     (1, 'Офисная'),
@@ -44,11 +45,13 @@ class Department(models.Model):
         verbose_name_plural = 'Список отделов'
 
 
-class Position(models.Model):
+class Position(CloneMixin, models.Model):
     name = models.CharField(max_length=45, verbose_name='Наименование должности', unique=True)
     competence_category = models.ManyToManyField(Category, related_name='positions',
                                                  verbose_name='Категория компетенций')
     chief = models.BooleanField(verbose_name='Является руководителем', default=False)
+
+    _clone_m2m_fields = ['competence_category']
 
     def __str__(self):
         return self.name
@@ -62,7 +65,7 @@ class Person(models.Model):
     tab_number = models.IntegerField(primary_key=True, verbose_name='Табельный номер')
     fio = models.CharField(max_length=128, verbose_name='ФИО')
     education = models.CharField(max_length=256, verbose_name='Образование')
-    experience = models.TextField(verbose_name='Опыт сотрудника')
+    experience = models.TextField(verbose_name='Опыт сотрудника', blank=True, null=True)
     position = models.ManyToManyField(Position, through='Staff', related_name='persons', verbose_name='Должность')
     department = models.ManyToManyField(Department, through='Staff', related_name='workers', verbose_name='Отдел')
     institution = models.TextField(verbose_name='Учебное заведение', blank=True, null=True)

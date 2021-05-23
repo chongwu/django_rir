@@ -4,7 +4,7 @@ from .views import upload_persons_list
 from django.urls import path
 
 # Register your models here.
-admin.site.register(Position)
+# admin.site.register(Position)
 # admin.site.register(Person)
 admin.site.register(Department)
 
@@ -14,6 +14,15 @@ admin.site.register(Department)
 #     list_display = ('person', 'position', 'department')
 #     list_filter = ('position', 'department')
 #     search_fields = ('person__fio',)
+def clone_model(modeladmin, request, queryset):
+    for position in queryset:
+        position.make_clone()
+clone_model.short_description = "Создать копию должности/должностей"
+
+
+@admin.register(Position)
+class PositionAdmin(admin.ModelAdmin):
+    actions = [clone_model]
 
 
 class PositionInlineAdmin(admin.TabularInline):
@@ -28,7 +37,9 @@ class PersonAdmin(admin.ModelAdmin):
     change_list_template = 'admin/model_change_list.html'
     list_display = ('tab_number', 'fio', 'education', 'experience', 'current_department', 'current_position',
                     'employment_form', 'status')
-    fields = ('tab_number', 'fio', 'user', 'education', 'institution', 'experience', 'extra_skill', 'employment_form', 'status', 'mentor')
+    fields = (
+    'tab_number', 'fio', 'user', 'education', 'institution', 'experience', 'extra_skill', 'employment_form', 'status',
+    'mentor')
 
     inlines = (PositionInlineAdmin,)
 
