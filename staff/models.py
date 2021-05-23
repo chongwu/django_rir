@@ -43,6 +43,7 @@ class Department(models.Model):
     class Meta:
         verbose_name = 'Отдел'
         verbose_name_plural = 'Список отделов'
+        ordering = ['name']
 
 
 class Position(CloneMixin, models.Model):
@@ -59,6 +60,7 @@ class Position(CloneMixin, models.Model):
     class Meta:
         verbose_name = 'Должность'
         verbose_name_plural = 'Список должностей'
+        ordering = ['name']
 
 
 class Person(models.Model):
@@ -79,7 +81,7 @@ class Person(models.Model):
                                 related_name='person')
 
     class Meta:
-        ordering = ('-fio',)
+        ordering = ('tab_number',)
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
 

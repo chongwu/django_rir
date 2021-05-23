@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
 from django.utils.encoding import smart_str
 from django.http import HttpResponseRedirect
@@ -13,6 +15,7 @@ from openpyxl.writer.excel import save_virtual_workbook
 from tempfile import NamedTemporaryFile
 from django.contrib import messages
 from myrir.utils import group_required
+from dateutil.relativedelta import relativedelta
 import os
 
 
@@ -148,36 +151,53 @@ def upload_persons_list(request):
                     exist_person = None
                 if not exist_person:
                     # TODO Преобразовать в функцию!
-                    try:
-                        user = User.objects.get(username=sheet.cell(row=i, column=3).value)
-                    except User.DoesNotExist:
-                        user = None
-                    try:
-                        mentor = Person.objects.get(fio=sheet.cell(row=i, column=10).value)
-                    except Person.DoesNotExist:
-                        mentor = None
+                    # try:
+                    #     user = User.objects.get(username=sheet.cell(row=i, column=2).value)
+                    # except User.DoesNotExist:
+                    #     user = None
+                    # try:
+                    #     mentor = Person.objects.get(fio=sheet.cell(row=i, column=10).value)
+                    # except Person.DoesNotExist:
+                    #     mentor = None
+
+                    start_date = sheet.cell(row=i, column=7).value
+                    if datetime.datetime.now() - relativedelta(months=3) > start_date:
+                        status = 2
+                    else:
+                        status = 1
+                    # self.employee.person_staff.get().date_start + relativedelta(months=3)
+
                     new_person = Person.objects.create(
                         tab_number=cell_val,
                         fio=sheet.cell(row=i, column=2).value,
-                        user=user,
-                        education=sheet.cell(row=i, column=4).value,
-                        institution=sheet.cell(row=i, column=5).value,
-                        experience=sheet.cell(row=i, column=6).value,
-                        extra_skill=sheet.cell(row=i, column=7).value,
-                        employment_form=list(EMPLOYMENT_FORMS_DICT.keys())[list(EMPLOYMENT_FORMS_DICT.values()).index(sheet.cell(row=i, column=8).value)],
-                        status=list(WORK_STATUSES_DICT.keys())[list(WORK_STATUSES_DICT.values()).index(sheet.cell(row=i, column=9).value)],
-                        mentor=mentor,
+                        # user=user,
+                        education=sheet.cell(row=i, column=3).value,
+                        institution=sheet.cell(row=i, column=4).value,
+                        # experience=sheet.cell(row=i, column=6).value,
+                        # extra_skill=sheet.cell(row=i, column=7).value,
+                        # employment_form=list(EMPLOYMENT_FORMS_DICT.keys())[list(EMPLOYMENT_FORMS_DICT.values()).index(sheet.cell(row=i, column=8).value)],
+                        # status=list(WORK_STATUSES_DICT.keys())[list(WORK_STATUSES_DICT.values()).index(sheet.cell(row=i, column=9).value)],
+                        status=status,
+                        # mentor=mentor,
                     )
-                    department = Department.objects.get(name=sheet.cell(row=i, column=11).value)
-                    position = Position.objects.get(name=sheet.cell(row=i, column=12).value)
-                    if position:
-                        start_date = sheet.cell(row=i, column=13).value
+
+                    try:
+                        position = Position.objects.get(name=sheet.cell(row=i, column=5).value)
+                    except Position.DoesNotExist:
+                        position = None
+                    try:
+                        department = Department.objects.get(name=sheet.cell(row=i, column=6).value)
+                    except Department.DoesNotExist:
+                        department = None
+
+                    if position and department:
                         Staff.objects.create(
                             person=new_person,
                             position=position,
                             department=department,
                             date_start=start_date.strftime('%Y-%m-%d')
                         )
+
         messages.success(request, 'Список сотрудников успешно загружен!')
     # return redirect('staff:person_list', department_id)
     return HttpResponseRedirect('../')
