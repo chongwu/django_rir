@@ -17,6 +17,7 @@ from django.contrib import messages
 from myrir.utils import group_required
 from dateutil.relativedelta import relativedelta
 import os
+import xlwt
 
 
 # Create your views here.
@@ -221,3 +222,14 @@ def json_departments(request):
 def json_positions(request):
     data = serializers.serialize("json", Position.objects.all(), fields=('name',))
     return HttpResponse(data, content_type='application/json')
+
+# @TODO 13.12.2021 - остановился здесь
+
+def export_employees_xlsx(request, department_id=None):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="employees.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Сотрудники')
+
+
