@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.core import serializers
 from django.contrib.auth.models import User
 from .models import Person, Department, Position, Staff, EMPLOYMENT_FORMS_DICT, WORK_STATUSES_DICT
-from competencies.models import Category
+from competencies.models import Category, Competence
 from questionnaires.models import Questionnaire, QuestionnaireRow, QuestionnaireRowHistory
 from itertools import groupby
 from operator import attrgetter
@@ -17,7 +17,9 @@ from django.contrib import messages
 from myrir.utils import group_required
 from dateutil.relativedelta import relativedelta
 import os
-import xlwt
+import pandas as pd
+from io import BytesIO
+from django.utils.encoding import escape_uri_path
 
 
 # Create your views here.
@@ -223,13 +225,54 @@ def json_positions(request):
     data = serializers.serialize("json", Position.objects.all(), fields=('name',))
     return HttpResponse(data, content_type='application/json')
 
-# @TODO 13.12.2021 - остановился здесь
 
 def export_employees_xlsx(request, department_id=None):
-    response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="employees.xls"'
+    competencies = Competence.objects.all()
+    if department_id:
+        employees = Department.objects.get(pk=department_id).workers.filter(person_staff__date_stop__isnull=True)
+    else:
+        employees = Person.objects.all()
+    columns = competencies.values_list('name', flat=True)
+    index = employees.values_list('fio', flat=True)
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Сотрудники')
+    df = pd.DataFrame(columns=columns, index=index)
+    for employee in employees:
+        questionnaire = employee.questionnaires.prefetch_related(
+            'rows', 'rows__competence').first()
+        if questionnaire:
+            for row in questionnaire.rows.all():
+               df.loc[employee.fio, row.competence.name] = getattr(row.competence, f'level_{row.competence_val}')
+    with BytesIO() as b:
+        writer = pd.ExcelWriter(b, engine='openpyxl')
+        df.to_excel(writer, sheet_name='Сотрудники')
+        writer.save()
+        filename = 'employees'
+        content_type = 'application/vnd.ms-excel'
+        response = HttpResponse(b.getvalue(), content_type=content_type)
+        response['Content-Disposition'] = 'attachment; filename="' + filename + '.xlsx"'
+        return response
 
 
+def export_employee_matrix(request, person_id):
+    employee = Person.objects.get(tab_number=person_id)
+    questionnaire = employee.questionnaires.prefetch_related('rows', 'rows__competence', 'rows__history').first()
+    competencies = questionnaire.competencies.all().values_list('name', flat=True)
+    dates = set()
+    dates.update(questionnaire.rows.all().values_list('date', flat=True).distinct())
+    for row in questionnaire.rows.all():
+        dates.update(row.history.all().values_list('date', flat=True).distinct())
+    df = pd.DataFrame(columns=dates, index=competencies)
+    for row in questionnaire.rows.all():
+        df.loc[row.competence.name, row.date] = getattr(row.competence, f'level_{row.competence_val}')
+        for row_history in row.history.all():
+            df.loc[row.competence.name, row_history.date] = getattr(row.competence, f'level_{row_history.new_competence_val}')
+
+    with BytesIO() as b:
+        writer = pd.ExcelWriter(b, engine='openpyxl')
+        df.to_excel(writer, sheet_name='Компетенции')
+        writer.save()
+        filename = f'{employee.fio}.xlsx'
+        content_type = 'application/vnd.ms-excel'
+        response = HttpResponse(b.getvalue(), content_type=content_type)
+        response['Content-Disposition'] = "attachment; filename=" + escape_uri_path(filename)
+        return response

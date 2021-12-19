@@ -16,6 +16,9 @@
             {% if rows %}
                 <h4 class="title is-4">Компетенции сотрудника:</h4>
                 {% if request.user|has_groups:'HR' %}
+                    <div class="mb-3">
+                        <a href="{% url 'staff:export_employee_matrix' person.tab_number %}" class="button is-primary">Выгрузить карту развития</a>
+                    </div>
                     <p>
                         <a href="{% url 'questionnaire:edit_questionnaire' person.questionnaires.first.id %}" class="button is-primary">Редактировать анкету</a>
                     </p>

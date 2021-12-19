@@ -30,11 +30,13 @@
                                     <input type="radio" value="1" name="question__{{ competence.id }}">
                                     Слабо выражена
                                     {% include 'staff/person/helper.html' with level=competence.level_1 %}
-                                </label><label class="radio">
+                                </label>
+                                <label class="radio">
                                     <input type="radio" value="2" name="question__{{ competence.id }}">
                                     Среднее
                                     {% include 'staff/person/helper.html' with level=competence.level_2 %}
-                                </label><label class="radio">
+                                </label>
+                                <label class="radio">
                                     <input type="radio" value="3" name="question__{{ competence.id }}">
                                     Владение на  проф. уровне
                                     {% include 'staff/person/helper.html' with level=competence.level_3 %}
