@@ -41,6 +41,10 @@ class QuestionnaireRow(models.Model):
     def get_human_read_value(self):
         return VAL_CHOICES[self.competence_val][1]
 
+    def get_competence_level_value(self):
+        competence_level_value = getattr(self.competence, f'level_{self.competence_val}')
+        return competence_level_value if competence_level_value else f'Уровень {self.competence_val}'
+
 
 class QuestionnaireRowHistory(models.Model):
     questionnaire_row = models.ForeignKey(QuestionnaireRow, on_delete=models.CASCADE, related_name='history')
@@ -53,6 +57,10 @@ class QuestionnaireRowHistory(models.Model):
 
     def get_human_read_new_value(self):
         return VAL_CHOICES[self.new_competence_val][1]
+
+    def get_competence_level_value(self):
+        competence_level_value = getattr(self.questionnaire_row.competence, f'level_{self.new_competence_val}')
+        return competence_level_value if competence_level_value else f'Уровень {self.new_competence_val}'
 
     class Meta:
         ordering = ('-date',)

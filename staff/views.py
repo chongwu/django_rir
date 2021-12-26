@@ -241,7 +241,8 @@ def export_employees_xlsx(request, department_id=None):
             'rows', 'rows__competence').first()
         if questionnaire:
             for row in questionnaire.rows.all():
-               df.loc[employee.fio, row.competence.name] = getattr(row.competence, f'level_{row.competence_val}')
+               # df.loc[employee.fio, row.competence.name] = getattr(row.competence, f'level_{row.competence_val}')
+               df.loc[employee.fio, row.competence.name] = row.get_competence_level_value()
     with BytesIO() as b:
         writer = pd.ExcelWriter(b, engine='openpyxl')
         df.to_excel(writer, sheet_name='Сотрудники')
@@ -263,9 +264,11 @@ def export_employee_matrix(request, person_id):
         dates.update(row.history.all().values_list('date', flat=True).distinct())
     df = pd.DataFrame(columns=dates, index=competencies)
     for row in questionnaire.rows.all():
-        df.loc[row.competence.name, row.date] = getattr(row.competence, f'level_{row.competence_val}')
+        # df.loc[row.competence.name, row.date] = getattr(row.competence, f'level_{row.competence_val}')
+        df.loc[row.competence.name, row.date] = row.get_competence_level_value()
         for row_history in row.history.all():
-            df.loc[row.competence.name, row_history.date] = getattr(row.competence, f'level_{row_history.new_competence_val}')
+            # df.loc[row.competence.name, row_history.date] = getattr(row.competence, f'level_{row_history.new_competence_val}')
+            df.loc[row.competence.name, row_history.date] = row_history.get_competence_level_value()
 
     with BytesIO() as b:
         writer = pd.ExcelWriter(b, engine='openpyxl')

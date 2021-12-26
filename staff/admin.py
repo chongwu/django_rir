@@ -37,9 +37,11 @@ class PersonAdmin(admin.ModelAdmin):
     change_list_template = 'admin/model_change_list.html'
     list_display = ('tab_number', 'fio', 'education', 'experience', 'current_department', 'current_position',
                     'employment_form', 'status')
+    search_fields = ('fio',)
     fields = (
     'tab_number', 'fio', 'user', 'education', 'institution', 'experience', 'extra_skill', 'employment_form', 'status',
     'mentor')
+    list_filter = ('education', 'employment_form', 'status')
 
     inlines = (PositionInlineAdmin,)
 
